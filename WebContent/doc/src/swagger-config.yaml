@@ -1,0 +1,80 @@
+openapi: "3.0.0"
+info:
+  version: "0.0.1"
+  title: "Swagger UI Webpack Setup"
+  description: "Demonstrates Swagger UI with Webpack including CSS and OAuth"
+servers:
+  - url: "https://demo.identityserver.io/api"
+    description: "Identity Server test API"
+components:
+  securitySchemes:
+    # See https://demo.identityserver.io/ for configuration details.
+    identity_server_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: "https://demo.identityserver.io/connect/authorize"
+          scopes:
+            api: "api"
+security:
+  - identity_server_auth:
+    - api
+paths:
+  /test:
+    get:
+      summary: "summary ..."
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "order placed for purchasing the pet"
+          required: true
+          schema:
+             $ref: "#/definitions/Order"
+      responses:
+        200:
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/ApiResponse'
+            ext/plain:
+              schema:
+                type: string
+              
+definitions:
+  Order:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      quantity:
+        type: "integer"
+        format: "int32"
+        default: 22
+      shipDate:
+        type: "string"
+        format: "date-time"
+      status:
+        type: "string"
+        description: "Order Status"
+        enum:
+        - "approved"
+        - "delivered"
+      complete:
+        type: "boolean"
+        default: false
+
+  ApiResponse:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      type:
+        type: "string"
+      message:
+        type: "string"
